@@ -17,9 +17,11 @@ const  config :MaryConfig = {
 
 Bot.on(message('text'), async (ctx) => {
    const  chatId = ctx.message.chat.id
-   if (WhiteLits.some(( id ) => id === ctx.message.chat.id )) {
+   const isWhitelisted = WhiteLits.some((id) => id === chatId)
+   const isGroup = ctx.chat.type === 'group' || ctx.chat.type === 'supergroup';
+   const question = ctx.message.text.toLowerCase() 
+   if (isWhitelisted || (isGroup && (isWhitelisted || question.includes('мари')))) {
     console.log('id in whiteList')
-    const  question = ctx.message.text.toLowerCase()
     const mary = new Mary(config, question, chatId.toString(), ctx.from.username ?? '', chatId.toString())
     if (question.includes('нарисуй')) {
       console.log('рисую изображение')
@@ -31,7 +33,9 @@ Bot.on(message('text'), async (ctx) => {
     }
   } else {
     console.log('id not whiteList')
-    await ctx.telegram.sendMessage(chatId, 'Прости но я не могу тебе ответить')
+    if (!isGroup) {
+      await ctx.telegram.sendMessage(chatId, 'Прости но я не могу тебе ответить')
+    }  
   }
 })
 
