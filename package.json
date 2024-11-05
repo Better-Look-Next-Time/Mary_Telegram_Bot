@@ -9,7 +9,7 @@
     "typescript": "^5.6.3"
   },
   "dependencies": {
-    "@mary/core": "^0.0.3",
+    "@mary/core": "^0.0.4",
     "telegraf": "^4.16.3"
   }
 }
