@@ -3,6 +3,7 @@ import { Telegraf } from "telegraf";
 import { message } from "telegraf/filters";
 import { env } from "bun";
 import { WhiteLits } from "./whiteList"; 
+import { SPECIAL_CHARS } from "./SPECIAL_CHARS";
 
 
 import type { MaryConfig } from "@mary/core";
@@ -16,6 +17,14 @@ const  config :MaryConfig = {
 }
 
 
+
+
+const escapeMarkdown = (text: string) => {
+  let answer = text
+  SPECIAL_CHARS.forEach(char => (answer =  answer.replaceAll(char, `\\${char}`))) 
+  console.log(answer)
+  return answer
+}
 Bot.on(message('text'), async (ctx) => {
    const  chatId = ctx.message.chat.id
    const isWhitelisted = WhiteLits.some((id) => id === chatId)
@@ -27,10 +36,10 @@ Bot.on(message('text'), async (ctx) => {
     if (question.includes('нарисуй')) {
       console.log('рисую изображение')
       const  answer = await mary.ImageGenerator()
-      await ctx.telegram.sendMessage(chatId, answer, { parse_mode: 'Markdown' })
+      await ctx.telegram.sendMessage(chatId, escapeMarkdown(answer), { parse_mode: 'MarkdownV2' })
     } else {
       const answer = await mary.Request()
-      await ctx.telegram.sendMessage(chatId, answer, { parse_mode: 'Markdown' })
+      await ctx.telegram.sendMessage(chatId, escapeMarkdown(answer), { parse_mode: 'MarkdownV2' })
     }
   } else {
     console.log('id not whiteList')
