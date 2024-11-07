@@ -4,6 +4,7 @@ import { message } from "telegraf/filters";
 import { env } from "bun";
 import { WhiteLits } from "./whiteList"; 
 
+
 import type { MaryConfig } from "@mary/core";
 
 const Bot =  new Telegraf(env.BotToken)
@@ -26,10 +27,10 @@ Bot.on(message('text'), async (ctx) => {
     if (question.includes('нарисуй')) {
       console.log('рисую изображение')
       const  answer = await mary.ImageGenerator()
-      await ctx.telegram.sendMessage(chatId, answer)
+      await ctx.telegram.sendMessage(chatId, answer, { parse_mode: 'Markdown' })
     } else {
       const answer = await mary.Request()
-      await ctx.telegram.sendMessage(chatId, answer)
+      await ctx.telegram.sendMessage(chatId, answer, { parse_mode: 'Markdown' })
     }
   } else {
     console.log('id not whiteList')
