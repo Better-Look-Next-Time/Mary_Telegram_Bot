@@ -1,0 +1,7 @@
+services:
+  mary:
+    build: .
+    environment:
+      NAGA_KEY: ng-TOKENTOKENTOKENTOKENTOKENTOKE
+      NAGA_BASE_URL: https://api.naga.ac/v1
+      BotToken: 0000000000:tokentokentokentokentokentokentoken
