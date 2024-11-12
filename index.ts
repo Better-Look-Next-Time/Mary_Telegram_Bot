@@ -13,7 +13,7 @@ const Bot =  new Telegraf(env.BotToken)
 const  config :MaryConfig = {
   thoughtsArray: ['mixtral-8x7b-instruct', 'llama-3.1-8b-instruct'],
   chapter: 'gpt-4o-mini',
-  creatorImagePrompt: 'llama-3.1-8b-instruct'
+  creatorImagePrompt: 'llama-3.1-8b-instruct',
 }
 
 
