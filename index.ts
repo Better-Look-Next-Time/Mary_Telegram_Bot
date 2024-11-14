@@ -36,6 +36,7 @@ Bot.on(message('text'), async (ctx) => {
 		return
 	}
 	if (!isGroup || question.includes('мари')) {
+		ctx.replyWithChatAction('typing')
 		const mary = new Mary(config, question, chatId.toString(), ctx.from.username ?? '', chatId.toString())
 		if (question.includes('нарисуй')) {
 			const answer = await mary.ImageGenerator()
