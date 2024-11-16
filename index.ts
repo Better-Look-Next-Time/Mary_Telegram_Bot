@@ -30,13 +30,13 @@ Bot.on(message('text'), async (ctx) => {
 	const chatId = ctx.message.chat.id
 	const isWhitelisted = WhiteList.some((id) => id === chatId)
 	const isGroup = ctx.chat.type === 'group' || ctx.chat.type === 'supergroup';
-	const question = ctx.message.text.toLowerCase()
+	const question = ctx.message.text.toLowerCase()  
+  const  typingTimout = setInterval(() => 	ctx.replyWithChatAction('typing'), 5000)
 	if (!isWhitelisted) {
 		if (!isGroup) await ctx.telegram.sendMessage(chatId, 'Прости но я не могу тебе ответить')
 		return
 	}
 	if (!isGroup || question.includes('мари')) {
-		ctx.replyWithChatAction('typing')
 		const mary = new Mary(config, question, chatId.toString(), ctx.from.username ?? '', chatId.toString())
 		if (question.includes('нарисуй')) {
 			const answer = await mary.ImageGenerator()
@@ -46,6 +46,7 @@ Bot.on(message('text'), async (ctx) => {
 			await ctx.telegram.sendMessage(chatId, escapeMarkdown(answer), { parse_mode: 'MarkdownV2' })
 		}
 	}
+  clearInterval(typingTimout)
 })
 
 Bot.launch()
