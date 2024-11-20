@@ -1,3 +1,1 @@
-export const WhiteList = [
-	999003596
-];
+export const WhiteList = [];
