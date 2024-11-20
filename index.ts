@@ -26,9 +26,12 @@ const escapeMarkdown = (text: string) => {
 	return answer
 }
 
+
+const  mary = new Mary(config)
+
 Bot.on(message('text'), async (ctx) => {
 	const chatId = ctx.message.chat.id
-	const isWhitelisted = WhiteList.some((id) => id === chatId)
+	const isWhitelisted = WhiteList.includes(chatId)
 	const isGroup = ctx.chat.type === 'group' || ctx.chat.type === 'supergroup';
 	const question = ctx.message.text.toLowerCase()  
   const  typingTimout = setInterval(() => 	ctx.replyWithChatAction('typing'), 5000)
@@ -37,12 +40,11 @@ Bot.on(message('text'), async (ctx) => {
 		return
 	}
 	if (!isGroup || question.includes('мари')) {
-		const mary = new Mary(config, question, chatId.toString(), ctx.from.username ?? '', chatId.toString())
 		if (question.includes('нарисуй')) {
-			const answer = await mary.ImageGenerator()
+			const answer = await mary.ImageGenerator(question, chatId.toString(), ctx.from.username ?? '', chatId.toString())
 			await ctx.telegram.sendMessage(chatId, escapeMarkdown(answer), { parse_mode: 'MarkdownV2' })
 		} else {
-			const answer = await mary.Request()
+			const answer = await mary.Request(question, chatId.toString(), ctx.from.username ?? '', chatId.toString())
 			await ctx.telegram.sendMessage(chatId, escapeMarkdown(answer), { parse_mode: 'MarkdownV2' })
 		}
 	}
