@@ -1,1 +1,1 @@
-export const WhiteList = [];
+export const WhiteList: number[] = []

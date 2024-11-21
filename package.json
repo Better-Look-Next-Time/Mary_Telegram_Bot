@@ -1,9 +1,10 @@
 {
   "name": "marytelegrambot",
-  "module": "index.ts",
   "type": "module",
-  "devDependencies": {
-    "@types/bun": "latest"
+  "module": "index.ts",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "peerDependencies": {
     "typescript": "^5.6.3"
@@ -11,5 +12,9 @@
   "dependencies": {
     "@mary/core": "^0.0.6",
     "telegraf": "^4.16.3"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^3.9.2",
+    "@types/bun": "latest"
   }
 }
