@@ -22,22 +22,21 @@ const escapeMarkdown = (text: string) => text.replaceAll(/(['\\_*[\]()~><&#+\-=|
 Bot.on(message('text'), async (ctx) => {
   const chatId: number = ctx.message.chat.id
   const isWhitelisted = WhiteList.includes(chatId)
-  const isGroup = ctx.chat.type === 'group' || ctx.chat.type === 'supergroup'
+  const isGroup = ctx.chat.type.includes('group')
   const question = ctx.message.text.toLowerCase()
 
-  if (!isWhitelisted && !isGroup) {
+  if (isGroup && !names.some(name => question.includes(name)))
+    return
+
+  if (!isWhitelisted)
     return await ctx.telegram.sendMessage(chatId, 'Прости но я не могу тебе ответить')
-  }
 
-  if (isWhitelisted && (!isGroup || names.some(name => question.includes(name)))) {
-    const action = question.includes('нарисуй') ? 'upload_photo' : 'typing'
-    const method = question.includes('нарисуй') ? mary.ImageGenerator.bind(mary) : mary.Request.bind(mary)
+  const isDraw = question.includes('нарисуй')
 
-    ctx.persistentChatAction(action, async () => {
-      const answer = await method(ctx.message.text, chatId.toString(), ctx.from?.username ?? '', chatId.toString())
-      await ctx.telegram.sendMessage(chatId, escapeMarkdown(answer), { parse_mode: 'MarkdownV2' })
-    })
-  }
+  ctx.persistentChatAction(isDraw ? 'upload_photo' : 'typing', async () => {
+    const answer = await (isDraw ? mary.ImageGenerator.bind(mary) : mary.Request.bind(mary))(ctx.message.text, chatId.toString(), ctx.from?.username ?? '', chatId.toString())
+    await ctx.telegram.sendMessage(chatId, escapeMarkdown(answer), { parse_mode: 'MarkdownV2' })
+  })
 })
 
 Bot.launch()
