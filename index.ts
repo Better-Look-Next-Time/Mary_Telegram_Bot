@@ -19,6 +19,14 @@ const Bot = new Telegraf(env.BOT_TOKEN)
 
 const escapeMarkdown = (text: string) => text.replaceAll(/(['\\_*[\]()~><&#+\-=|{}.!])/g, '\\$1')
 
+function extractLast(str: string) {
+  const lastIndex = str.lastIndexOf('\n')
+  return [
+    str.slice(0, lastIndex),
+    str.slice(lastIndex + 1).trim(),
+  ]
+}
+
 Bot.on(message('text'), async (ctx) => {
   const chatId: number = ctx.message.chat.id
   const isWhitelisted = WhiteList.includes(chatId)
@@ -33,9 +41,17 @@ Bot.on(message('text'), async (ctx) => {
 
   const isDraw = question.includes('нарисуй')
 
+  const method = isDraw ? mary.ImageGenerator : mary.Request
+
   ctx.persistentChatAction(isDraw ? 'upload_photo' : 'typing', async () => {
-    const answer = await (isDraw ? mary.ImageGenerator.bind(mary) : mary.Request.bind(mary))(ctx.message.text, chatId.toString(), ctx.from?.username ?? '', chatId.toString())
-    await ctx.telegram.sendMessage(chatId, escapeMarkdown(answer), { parse_mode: 'MarkdownV2' })
+    const answer = await method.call(mary, ctx.message.text, chatId.toString(), ctx.from?.username ?? '', chatId.toString())
+    if (isDraw) {
+      const [content, imgUrl] = extractLast(answer)
+      ctx.replyWithPhoto(imgUrl, { caption: escapeMarkdown(content), parse_mode: 'MarkdownV2' })
+    }
+    else {
+      await ctx.telegram.sendMessage(chatId, escapeMarkdown(answer), { parse_mode: 'MarkdownV2' })
+    }
   })
 })
 
