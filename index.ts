@@ -1,14 +1,18 @@
 import type { MaryConfig } from '@mary/core'
-import { existsSync, readFileSync } from 'node:fs'
 import { Mary } from '@mary/core'
-import { env } from 'bun'
+import { env, file } from 'bun'
 import { Telegraf } from 'telegraf'
 import { message } from 'telegraf/filters'
 import { WhiteList } from './whiteList'
 
 // reading Mary config and character
-const config: MaryConfig = JSON.parse(readFileSync('./config.json', 'utf8'))
-config.character = existsSync('./character.txt') ? readFileSync('./character.txt', 'utf8') : ''
+
+const configFile = file('./config.json')
+const character = file('./character.txt')
+
+const config: MaryConfig = await configFile.json()
+
+config.character = await character.exists() ? await character.text() : ''
 const mary = new Mary(config)
 
 // bot options
