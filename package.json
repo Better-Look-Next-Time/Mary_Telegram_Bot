@@ -7,14 +7,14 @@
     "lint:fix": "eslint . --fix"
   },
   "peerDependencies": {
-    "typescript": "^5.6.3"
+    "typescript": "^5.7.2"
   },
   "dependencies": {
-    "@mary/core": "^0.0.7",
+    "@mary/core": "^0.0.8",
     "telegraf": "^4.16.3"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^3.9.2",
+    "@antfu/eslint-config": "^3.11.2",
     "@types/bun": "latest"
   }
 }
